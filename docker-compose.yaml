@@ -10,6 +10,8 @@ services:
     devices:
       - /dev/net/tun
 
+    ports:
+      - 8080:80
     volumes:
       # Replace with your config. `/config/config.ovpn` is the default config path used by this image
       - ./config.ovpn:/config/config.ovpn
@@ -18,5 +20,6 @@ services:
       - OPENVPN_USERNAME=${OPENVPN_USERNAME}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
 
-      # Select the host to redirect
+      # Select the host to redirect and address to redirect to
       - PROXY_HOST=foobar.com
+      - PROXY_PASS_ADDRESS=${PROXY_PASS_ADDRESS}
