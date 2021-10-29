@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+
+export TMP="$(mktemp -d)"
+
+# Tell runsv to not restart this process when exiting.
+echo "o" > $PWD/supervise/control 
+
+# Check if the config file exists
+if [ ! -f "${OPENVPN_CONFIG_FILE}" ]; then
+    echo "You must provide an existing OpenVPN config file using the OPENVPN_CONFIG_FILE environment variable."
+    exit 1
+fi
+
+# Paste credentials into file if they are present
+export CREDENTIALS_ARG=""
+if [ ! -z ${OPENVPN_USERNAME} ]; then
+    echo "$OPENVPN_USERNAME" > "${TMP}/openvpn-credentials"
+    echo "$OPENVPN_PASSWORD" >> "${TMP}/openvpn-credentials"
+    chmod 600 "${TMP}/openvpn-credentials"
+
+    CREDENTIALS_ARG="--auth-user-pass ${TMP}/openvpn-credentials"
+fi
+
+# Copy config to temporary directory
+if [ ! -f "${TEMP_DIR}/config.ovpn" ]; then
+    cp "${OPENVPN_CONFIG_FILE}" "${TMP}/config.ovpn"
+fi
+
+# Start OpenVPN
+if [ ! -z "${CREDENTIALS_ARG}" ]; then
+    openvpn --config "${TMP}/config.ovpn" $CREDENTIALS_ARG
+else
+    openvpn --config "${TMP}/config.ovpn"
+fi
+
+if [ "$exit_code" != "0" ]; then
+    echo "OpenVPN failed to start. Exiting..."
+    exit $exit_code
+fi
