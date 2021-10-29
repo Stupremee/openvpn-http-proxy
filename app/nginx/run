@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+export TMP="$(mktemp -d)"
+
+# Tell runsv to not restart this process when exiting.
+echo "o" > $PWD/supervise/control 
+
+# Check if required variables are set
+if [ -z "${PROXY_PASS_ADDRESS}" ]; then
+    echo "You must set the PROXY_PASS_ADDRESS to start the container."
+    exit 1
+fi
+
+if [ -z "${PROXY_HOST}" ]; then
+    echo "You must set the PROXY_HOST to start the container."
+    exit 1
+fi
+
+# Substitute environment variables in the NGINX config
+envsubst < /app/nginx/config > "${TMP}/config"
+
+# Start NGINX in the foreground
+nginx -g "daemon off;" -c "${TMP}/config"
