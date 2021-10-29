@@ -16,6 +16,12 @@ is in your VPN and you can make the requests to this container which will redire
 For a working example have a look at the `docker-compose.yaml` which provides a running environment that will
 redirect `foobar.com` to whatever address you specify in your `.env` file using the `PROXY_PASS_ADDRESS` variable.
 
+### Image
+
+The image is published to both, [Docker Hub] and [GitHub Packages]. All tags on GitHub are pushed separately as
+a new image tag (e.g. `v0.1.0`) is the image for the `v0.1.0` tag and `main` is tag for the latest development version
+from the `main` branch.
+
 ### Mounts
 
 The only required file to mount is the OpenVPN configuration, whose default location is `/config/config.ovpn` inside the
@@ -35,3 +41,9 @@ container.
 ### Ports
 
 This image only exposes port 80 which is the NGINX web server.
+
+
+
+
+[Docker Hub]: https://hub.docker.com/r/stupremee/openvpn-http-proxy
+[GitHub Packages]: https://github.com/Stupremee/openvpn-http-proxy/pkgs/container/openvpn-http-proxy
