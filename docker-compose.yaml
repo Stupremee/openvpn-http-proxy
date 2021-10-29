@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  openvpn_proxy:
+    build: .
+
+    # Required for OpenVPN to work
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+
+    volumes:
+      # Replace with your config. `/config/config.ovpn` is the default config path used by this image
+      - ./config.ovpn:/config/config.ovpn
+    environment:
+      # Create a .env file with these values
+      - OPENVPN_USERNAME=${OPENVPN_USERNAME}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+
+      # Select the host to redirect
+      - PROXY_HOST=foobar.com
